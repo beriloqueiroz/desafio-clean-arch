@@ -35,3 +35,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, in *pb.CreateOrderReques
 		FinalPrice: float32(output.FinalPrice),
 	}, nil
 }
+
+func (s *OrderService) (ctx context.Context, in *ListOrderRequest, opts ...grpc.CallOption) (*ListOrderResponse, error){
+	//todo
+}
