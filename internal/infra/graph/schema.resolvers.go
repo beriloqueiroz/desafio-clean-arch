@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/beriloqueiroz/desafio-clean-arch/internal/infra/graph/model"
 	"github.com/beriloqueiroz/desafio-clean-arch/internal/usecase"
@@ -28,6 +29,11 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.OrderIn
 		Tax:        float64(output.Tax),
 		FinalPrice: float64(output.FinalPrice),
 	}, nil
+}
+
+// ListOrders is the resolver for the listOrders field.
+func (r *mutationResolver) ListOrders(ctx context.Context, input *model.ListInput) ([]*model.Order, error) {
+	panic(fmt.Errorf("not implemented: ListOrders - listOrders"))
 }
 
 // Mutation returns MutationResolver implementation.

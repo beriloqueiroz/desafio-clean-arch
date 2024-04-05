@@ -2,6 +2,11 @@
 
 package model
 
+type ListInput struct {
+	PageSize int `json:"pageSize"`
+	Page     int `json:"page"`
+}
+
 type Order struct {
 	ID         string  `json:"id"`
 	Price      float64 `json:"Price"`
@@ -13,9 +18,4 @@ type OrderInput struct {
 	ID    string  `json:"id"`
 	Price float64 `json:"Price"`
 	Tax   float64 `json:"Tax"`
-}
-
-type ListInput struct {
-	PageSize int `json:"page_size"`
-	Page 		 int `json:"page"`
 }
