@@ -88,5 +88,41 @@ func getRabbitMQChannel(urlConn string) *amqp.Channel {
 	if err != nil {
 		panic(err)
 	}
+
+	q_created, err := ch.QueueDeclare(
+		"orders_created", // name
+		true,             // durable
+		false,            // auto delete
+		false,            // exclusive
+		false,            // no wait
+		nil,              // args
+	)
+	if err != nil {
+		panic(err)
+	}
+	err = ch.QueueBind(q_created.Name, "order_created", "amq.direct", false, nil)
+
+	if err != nil {
+		panic(err)
+	}
+
+	q_listed, err := ch.QueueDeclare(
+		"orders_listed", // name
+		true,            // durable
+		false,           // auto delete
+		false,           // exclusive
+		false,           // no wait
+		nil,             // args
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	err = ch.QueueBind(q_listed.Name, "order_listed", "amq.direct", false, nil)
+
+	if err != nil {
+		panic(err)
+	}
+
 	return ch
 }
