@@ -30,10 +30,10 @@ func (h *OrderListedHandler) Handle(event events.EventInterface, wg *sync.WaitGr
 	}
 
 	h.RabbitMQChannel.Publish(
-		"amq.direct", // exchange
-		"",           // key name
-		false,        // mandatory
-		false,        // immediate
-		msgRabbitmq,  // message to publish
+		"amq.direct",   // exchange
+		"order_listed", // key name
+		false,          // mandatory
+		false,          // immediate
+		msgRabbitmq,    // message to publish
 	)
 }
