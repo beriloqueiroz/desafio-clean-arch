@@ -2,7 +2,9 @@ package web
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/beriloqueiroz/desafio-clean-arch/internal/entity"
 	"github.com/beriloqueiroz/desafio-clean-arch/internal/usecase"
@@ -28,8 +30,26 @@ func NewWebListOrderHandler(
 }
 
 func (h *WebListOrderHandler) List(w http.ResponseWriter, r *http.Request) {
-	var dto usecase.ListOrderInputDTO
-	err := json.NewDecoder(r.Body).Decode(&dto)
+	pageInt := 0
+	pageSizeInt := 1000
+	var err error = nil
+	if len(r.URL.Query().Get("page")) > 0 && len(r.URL.Query().Get("pageSize")) > 0 {
+		pageInt, err = strconv.Atoi(r.URL.Query().Get("page"))
+		if err != nil {
+			pageInt = 0
+		}
+		pageSizeInt, err = strconv.Atoi(r.URL.Query().Get("pageSize"))
+		if err != nil {
+			pageInt = 0
+			pageSizeInt = 1000
+		}
+	}
+
+	dto := usecase.ListOrderInputDTO{
+		Page:     pageInt,
+		PageSize: pageSizeInt,
+	}
+	fmt.Println("listing order...")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/beriloqueiroz/desafio-clean-arch/internal/entity"
@@ -30,6 +31,7 @@ func NewWebOrderHandler(
 func (h *WebOrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var dto usecase.OrderInputDTO
 	err := json.NewDecoder(r.Body).Decode(&dto)
+	fmt.Println("creating order...")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
