@@ -15,11 +15,13 @@ type conf struct {
 	RabbitMqUrlConn   string `mapstructure:"RABBITMQ_URL_CONN"`
 }
 
-func LoadConfig(path string) (*conf, error) {
+func LoadConfig(paths []string) (*conf, error) {
 	var cfg *conf
 	viper.SetConfigName("app_config")
 	viper.SetConfigType("env")
-	viper.AddConfigPath(path)
+	for _, path := range paths {
+		viper.AddConfigPath(path)
+	}
 	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
 	err := viper.ReadInConfig()

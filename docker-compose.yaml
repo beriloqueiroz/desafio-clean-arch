@@ -13,6 +13,8 @@ services:
       - 3306:3306
     volumes:
       - .docker/mysql:/var/lib/mysql
+    networks:
+      - network
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -27,28 +29,40 @@ services:
     volumes:
       - .docker/rabbitmq/:/var/lib/rabbitmq/
       - .docker/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - network
 
-  # app:
-  #   build: 
-  #     context: ./
-  #     dockerfile: "Dockerfile"
-  #   restart: always
-  #   container_name: app
-  #   environment:
-  #     DB_DRIVER: mysql
-  #     DB_HOST: localhost
-  #     DB_PORT: 3306
-  #     DB_USER: root
-  #     DB_PASSWORD: root
-  #     DB_NAME: orders
-  #     WEB_SERVER_PORT: :8000
-  #     GRPC_SERVER_PORT: 50051
-  #     GRAPHQL_SERVER_PORT: 8080
-  #     RABBITMQ_URL_CONN: amqp://guest:guest@localhost:5672/
-  #   ports:
-  #     - "8000:8000"
-  #     - "8080:8080"
-  #     - "50051:50051"
-  #   depends_on:
-  #     - mysql
-  #     - rabbitmq
+  migrate:
+    build: 
+      context: ./internal/infra/database/migrations/
+      dockerfile: "Dockerfile"
+    container_name: migrate
+    networks:
+        - network
+    volumes:
+        - ./internal/infra/database/migrations:/migrations
+    entrypoint: dockerize -wait tcp://mysql:3306 -timeout 20s migrate
+    command: ["-path", "/migrations", "-database",  "mysql://root:root@tcp(mysql:3306)/orders", "-verbose","up"]
+    links: 
+        - mysql
+    depends_on:
+      - mysql
+
+  go-app:
+    build: 
+      context: ./
+      dockerfile: "Dockerfile"
+    restart: always
+    container_name: go-app
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+      - "50051:50051"
+    depends_on:
+      - mysql
+      - rabbitmq
+    networks:
+      - network
+
+networks:
+  network: {}

@@ -1,0 +1,17 @@
+mutation createOrder {
+  createOrder(input: {id: "cc5", Price: 15.5, Tax: 1}) {
+    id
+    Price
+    Tax
+    FinalPrice
+  }
+}
+
+mutation listOrder {
+  listOrders(input: {page: 0, pageSize: 100}) {
+    id
+    Price
+    Tax
+    FinalPrice
+  }
+}

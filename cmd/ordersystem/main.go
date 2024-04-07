@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"time"
 
 	graphql_handler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -24,7 +25,7 @@ import (
 )
 
 func main() {
-	configs, err := configs.LoadConfig(".")
+	configs, err := configs.LoadConfig([]string{"."})
 	if err != nil {
 		panic(err)
 	}
@@ -35,6 +36,8 @@ func main() {
 	}
 	defer db.Close()
 
+	fmt.Println("Waiting rabbitmq...")
+	time.Sleep(time.Second * 6)
 	rabbitMQChannel := getRabbitMQChannel(configs.RabbitMqUrlConn)
 
 	eventDispatcher := events.NewEventDispatcher()
